@@ -3,31 +3,11 @@ import { register, login, logout } from "../controllers/auth";
 import { validate } from "../middlewares/validate";
 import { upload } from "../middlewares/multer";
 import multer from "multer";
-import Joi from "joi";
+import { registerSchema, loginSchema } from "../validators/auth";
 import { authenticate } from "../middlewares/auth";
 
 const router = Router();
 const noFiles = multer().none();
-
-const registerSchema = Joi.object({
-  body: Joi.object({
-    name: Joi.string().min(2).required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().min(6).required(),
-    role: Joi.string().valid("SUPPLIER", "USER").default("USER"),
-  }),
-  params: Joi.object({}),
-  query: Joi.object({}),
-});
-
-const loginSchema = Joi.object({
-  body: Joi.object({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-  }),
-  params: Joi.object({}),
-  query: Joi.object({}),
-});
 
 router.post(
   "/register",

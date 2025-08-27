@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,50 +14,58 @@ enum Role {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  password String
-  role Role @default(USER)
-  points Int @default(0)
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(USER)
+  points    Int       @default(0)
   avatarUrl String?
-  orders Order[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  orders    Order[]
+  products  Product[] @relation("UserProducts")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Product {
-  id Int @id @default(autoincrement())
-  name String 
+  id          Int       @id @default(autoincrement())
+  name        String 
   description String?
-  price Int
-  stock Int
-  imageUrl String?
-  deletedAt DateTime?
-  orders Order[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  price       Int
+  stock       Int
+  imageUrl    String?
+  deletedAt   DateTime?
+
+  supplierId  Int
+  supplier    User      @relation("UserProducts", fields: [supplierId], references: [id])
+
+  orders      Order[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@index([deletedAt])
+  @@index([supplierId])
 }
 
 model Order {
-  id Int @id @default(autoincrement())
-  userId Int
-  productId Int
-  quantity Int
-  unitPrice Int
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  productId  Int
+  quantity   Int
+  unitPrice  Int
   totalPrice Int
-  createdAt DateTime @default(now())
+  createdAt  DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
   product Product @relation(fields: [productId], references: [id])
 }
 
 model Transfer {
-  id Int @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   fromUserId Int
-  toUserid Int
-  amount Int
-  createdAt DateTime @default(now())
+  toUserid   Int
+  amount     Int
+  createdAt  DateTime @default(now())
 }
