@@ -1,6 +1,6 @@
 import "express-async-errors";
 import express from "express";
-import cors from "cors";
+import { corsMiddleware } from "./middlewares/cors";
 import path from "path";
 import fs from "fs";
 import { errorHandler } from "./middlewares/errorHandler";
@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth";
 
 const app = express();
-app.use(cors());
+app.use(corsMiddleware);
 app.use(express.json());
 app.use(cookieParser());
 
