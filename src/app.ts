@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import authRoute from "./routes/auth";
 import productRoute from "./routes/product";
 import orderRoute from "./routes/order";
+import pointRoute from "./routes/point";
 
 const app = express();
 app.use(corsMiddleware);
@@ -22,6 +23,7 @@ app.use("/uploads", express.static(path.resolve(uploadDir)));
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1", productRoute);
 app.use("/api/v1", orderRoute);
+app.use("/api/v1", pointRoute);
 
 app.use(errorHandler);
 
