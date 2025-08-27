@@ -56,5 +56,34 @@ export async function login(req: Request, res: Response) {
   }
 
   const token = signToken({ id: user.id, role: user.role });
-  res.json({ data: { user }, token });
+
+  res
+    .cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 60 * 60 * 1000,
+    })
+    .status(200)
+    .json({
+      code: 200,
+      status: "success",
+      message: "Login success",
+      data: { token },
+    });
+}
+
+export async function logout(req: Request, res: Response) {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    path: "/",
+  });
+
+  res.status(200).json({
+    code: 200,
+    status: "success",
+    message: "Logged out successfully",
+  });
 }
