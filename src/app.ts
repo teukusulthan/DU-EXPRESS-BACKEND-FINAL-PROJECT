@@ -1,8 +1,9 @@
+import "express-async-errors";
 import express from "express";
 import cors from "cors";
 import path from "path";
 import fs from "fs";
-import { errorHandler, notFoundHandler } from "./middlewares/errorHandler";
+import { errorHandler } from "./middlewares/errorHandler";
 
 import authRoute from "./routes/auth";
 
@@ -16,7 +17,6 @@ app.use("/uploads", express.static(path.resolve(uploadDir)));
 
 app.use("/api/v1/auth", authRoute);
 
-app.use(notFoundHandler);
 app.use(errorHandler);
 
 export default app;

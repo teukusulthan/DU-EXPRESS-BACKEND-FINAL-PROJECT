@@ -1,16 +1,21 @@
 import { Request, Response, NextFunction } from "express";
-
-export function notFoundHandler(req: Request, res: Response) {
-  res.status(404).json({ error: "Not Found" });
-}
+import multer from "multer";
 
 export function errorHandler(
   err: any,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) {
-  console.error(err);
-  const status = err.status || 500;
-  res.status(status).json({ error: err.message || "Internal Server Error" });
+  const status = err.status || err.statusCode || 500;
+  let message = err.message || "Internal Server Error";
+
+  const details = Array.isArray(err.details) ? err.details : undefined;
+
+  res.status(status).json({
+    code: status,
+    status: "error",
+    message,
+    ...(details ? { details } : {}),
+  });
 }

@@ -12,7 +12,11 @@ export async function register(req: Request, res: Response) {
   };
 
   const exists = await prisma.user.findUnique({ where: { email } });
-  if (exists) return res.status(409).json({ error: "Email already used" });
+  if (exists) {
+    const err = new Error("Email already used");
+    (err as any).status = 409;
+    throw err;
+  }
 
   const passwordHash = await hashPassword(password);
 
@@ -35,10 +39,22 @@ export async function login(req: Request, res: Response) {
   const { email, password } = req.body as { email: string; password: string };
 
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return res.status(401).json({ error: "Invalid credentials" });
+  if (!user)
+    if (!user) {
+      const err = new Error(
+        "User not found, make sure the email is registered"
+      );
+      (err as any).status = 404;
+      throw err;
+    }
 
   const ok = await comparePassword(password, user.password);
-  if (!ok) return res.status(401).json({ error: "Invalid credentials" });
+  if (!ok) {
+    const err = new Error("Wrong password");
+    (err as any).status = 401;
+    throw err;
+  }
+
   const token = signToken({ id: user.id, role: user.role });
-  res.json({ token });
+  res.json({ data: { user }, token });
 }

@@ -2,9 +2,11 @@ import { Router } from "express";
 import { register, login } from "../controllers/auth";
 import { validate } from "../middlewares/validate";
 import { upload } from "../middlewares/multer";
+import multer from "multer";
 import Joi from "joi";
 
 const router = Router();
+const noFiles = multer().none();
 
 const registerSchema = Joi.object({
   body: Joi.object({
@@ -32,6 +34,6 @@ router.post(
   validate(registerSchema),
   register
 );
-router.post("/login", validate(loginSchema), login);
+router.post("/login", noFiles, validate(loginSchema), login);
 
 export default router;
